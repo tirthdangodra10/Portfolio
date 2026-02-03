@@ -9,9 +9,14 @@ const Navbar = ({ session, onOpenLogin, onLogout }) => {
   const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
-    // ... scroll logic remains same ...
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // Force 'home' active when near the top of the page
+      if (window.scrollY < 100) {
+        setActiveSection('home');
+        return;
+      }
 
       const sections = ['home', 'about', 'projects', 'contact'];
       // const scrollPos = window.scrollY + window.innerHeight / 3; 

@@ -402,12 +402,27 @@
     }
 
     .form-grid {
-        gap: 1.5rem;
+        grid-template-columns: 1fr;
+        /* Force 1 column on small screens */
+        gap: 1.25rem;
+    }
+
+    .project-editor-form input,
+    .project-editor-form textarea {
+        padding: 0.9rem;
+        font-size: 16px;
+        /* Best for mobile inputs */
     }
 
     .editor-actions .btn-primary {
         width: 100%;
         padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .file-input-label {
+        font-size: 0.9rem;
+        min-height: 50px;
     }
 }
 

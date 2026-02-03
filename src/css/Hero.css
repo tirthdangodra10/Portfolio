@@ -140,6 +140,12 @@
     resize: none;
 }
 
+.edit-btn-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -489,6 +495,11 @@
     }
 
     .btn {
+        width: 100%;
+    }
+
+    .edit-btn-group {
+        flex-direction: column;
         width: 100%;
     }
 }

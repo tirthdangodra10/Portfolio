@@ -196,8 +196,10 @@ const Hero = ({ session }) => {
                                 onChange={(e) => setHero({ ...hero, description: e.target.value })}
                                 placeholder="Edit Description"
                             />
-                            <button onClick={handleSave} className="btn btn-primary">Save Changes</button>
-                            <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ marginLeft: '10px' }}>Cancel</button>
+                            <div className="edit-btn-group">
+                                <button onClick={handleSave} className="btn btn-primary">Save Changes</button>
+                                <button onClick={() => setIsEditing(false)} className="btn btn-outline">Cancel</button>
+                            </div>
                         </div>
                     ) : (
                         <>
