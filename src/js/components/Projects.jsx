@@ -3,7 +3,7 @@ import '../../css/Projects.css';
 import { portfolioData } from '../../data/portfolioData';
 import { supabase } from '../../supabaseClient';
 
-const Projects = () => {
+const Projects = ({ session }) => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -184,18 +184,19 @@ const Projects = () => {
     };
 
     if (loading) return null;
-
     return (
         <section className="section projects">
             <div className="container">
                 <div className="projects-header">
                     <h2 className="section-title">Featured <span>Projects</span></h2>
-                    <button
-                        className="btn btn-outline"
-                        onClick={() => setIsEditing(!isEditing)}
-                    >
-                        {isEditing ? "Close Editor" : "Manage Projects"}
-                    </button>
+                    {session && (
+                        <button
+                            className="btn btn-outline"
+                            onClick={() => setIsEditing(!isEditing)}
+                        >
+                            {isEditing ? "Close Editor" : "Manage Projects"}
+                        </button>
+                    )}
                 </div>
 
                 {isEditing && (

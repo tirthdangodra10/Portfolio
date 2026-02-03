@@ -5,7 +5,7 @@ import { supabase } from '../../supabaseClient';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../utils/cropImage';
 
-const Hero = () => {
+const Hero = ({ session }) => {
     const [hero, setHero] = useState(portfolioData.hero);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -20,37 +20,54 @@ const Hero = () => {
         const syncHero = async () => {
             try {
                 // 1. Fetch current data from Supabase
+                // Using maybeSingle() to avoid errors if 0 or >1 rows exist (returns null if 0, first if 1, error if >1 usually but limit(1) helps)
                 const { data, error } = await supabase
                     .from('profiles')
                     .select('*')
-                    .single();
+                    .limit(1)
+                    .maybeSingle();
 
-                if (error && error.code !== 'PGRST116') throw error;
+                if (error) throw error;
 
-                // 2. Logic: If no data exists, or if we want to ensure JS file takes precedence
-                // For this portfolio, we'll auto-upsert the JS data to keep DB in sync with code edits
-                const { error: upsertError } = await supabase
-                    .from('profiles')
-                    .upsert({
-                        id: data?.id || undefined,
-                        name: portfolioData.hero.name,
-                        role: portfolioData.hero.role,
-                        description: portfolioData.hero.description,
-                        image_url: portfolioData.hero.image,
-                        resume_url: portfolioData.hero.resumeUrl,
-                        updated_at: new Date()
+                // 2. Update local state if data exists
+                if (data) {
+                    setHero({
+                        // Store ID for future updates
+                        id: data.id,
+                        name: data.name || portfolioData.hero.name,
+                        role: data.role || portfolioData.hero.role,
+                        description: data.description || portfolioData.hero.description,
+                        image: data.image_url || portfolioData.hero.image,
+                        resumeUrl: data.resume_url || portfolioData.hero.resumeUrl
                     });
+                } else {
+                    // Initial Seed if empty
+                    const { data: newProfile, error: insertError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                            name: portfolioData.hero.name,
+                            role: portfolioData.hero.role,
+                            description: portfolioData.hero.description,
+                            image_url: portfolioData.hero.image,
+                            resume_url: portfolioData.hero.resumeUrl,
+                            updated_at: new Date()
+                        }])
+                        .select()
+                        .single();
 
-                if (upsertError) throw upsertError;
-
-                // 3. Update local state with the latest
-                setHero({
-                    name: portfolioData.hero.name,
-                    role: portfolioData.hero.role,
-                    description: portfolioData.hero.description,
-                    image: portfolioData.hero.image,
-                    resumeUrl: portfolioData.hero.resumeUrl
-                });
+                    if (insertError) {
+                        console.error("Auto-seeding profile failed:", insertError);
+                    } else if (newProfile) {
+                        setHero({
+                            id: newProfile.id,
+                            name: newProfile.name,
+                            role: newProfile.role,
+                            description: newProfile.description,
+                            image: newProfile.image_url,
+                            resumeUrl: newProfile.resume_url
+                        });
+                    }
+                }
 
             } catch (err) {
                 console.error("Supabase Sync Error:", err);
@@ -70,7 +87,7 @@ const Hero = () => {
             const { error } = await supabase
                 .from('profiles')
                 .upsert({
-                    id: (await supabase.from('profiles').select('id').single()).data?.id || undefined,
+                    id: hero.id, // Use the UUID we fetched
                     name: hero.name,
                     role: hero.role,
                     description: hero.description,
@@ -180,6 +197,7 @@ const Hero = () => {
                                 placeholder="Edit Description"
                             />
                             <button onClick={handleSave} className="btn btn-primary">Save Changes</button>
+                            <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ marginLeft: '10px' }}>Cancel</button>
                         </div>
                     ) : (
                         <>
@@ -190,7 +208,14 @@ const Hero = () => {
                             <p className="hero-description">{hero.description}</p>
                             <div className="hero-btns">
                                 <a href="#projects" className="btn btn-primary">View Work</a>
-                                <button onClick={() => setIsEditing(true)} className="btn btn-outline">Edit Profile</button>
+                                {session && (
+                                    <button
+                                        className="btn btn-outline"
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        Edit Hero
+                                    </button>
+                                )}
                             </div>
                         </>
                     )}

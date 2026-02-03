@@ -19,12 +19,14 @@ export const portfolioData = {
         }
     },
     contact: {
+        title: "Get In Touch",
+        subtitle: "Let's talk about everything!",
+        description: "If you have any questions or want to get in touch, feel free to reach out!",
         email: "tirthdangodra@gmail.com",
         phone: "7283997622",
         socials: {
-            linkedin: "#",
+            linkedin: "https://www.linkedin.com/in/tirth-dangodra-607402372/",
             github: "https://github.com/tirthdangodra10",
-            twitter: "#"
         }
     },
     projects: [

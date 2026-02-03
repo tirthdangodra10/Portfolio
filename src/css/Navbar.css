@@ -275,3 +275,71 @@
         height: 14px;
     }
 }
+
+/* Add style for the auth button in navbar */
+/* Navigation Auth Button */
+/* Navigation Auth Button - Textual Style */
+.nav-auth-btn {
+    margin-left: 20px;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary) !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: visible;
+    /* Allow glow overlap */
+}
+
+/* Hover Effect: Text Glow */
+.nav-auth-btn:hover {
+    color: white !important;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+    transform: translateY(-1px);
+    background: transparent;
+}
+
+/* Icon Animation on Hover */
+.nav-auth-btn:hover svg {
+    stroke: #a78bfa;
+    filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.6));
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+
+/* Ensure no underlines from global styles */
+.nav-center a.nav-auth-btn::after,
+.nav-auth-btn::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .nav-auth-btn {
+        margin-left: 0;
+        margin-top: auto;
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        /* Slight background only on mobile for touch target */
+        color: white !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        justify-content: flex-start;
+        /* Align left alongside icon */
+        padding-left: 2rem;
+    }
+
+    .nav-auth-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--color-primary) !important;
+    }
+}
