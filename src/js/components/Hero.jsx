@@ -24,6 +24,7 @@ const Hero = ({ session }) => {
                 const { data, error } = await supabase
                     .from('profiles')
                     .select('*')
+                    .order('updated_at', { ascending: false })
                     .limit(1)
                     .maybeSingle();
 
