@@ -326,20 +326,22 @@
 @media (max-width: 992px) {
     .nav-auth-btn {
         margin-left: 0;
-        margin-top: auto;
+        margin-top: 2rem;
         width: 100%;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.03);
-        /* Slight background only on mobile for touch target */
+        padding: 0.8rem;
+        background: teansparent;
+        /* Subtle purple tint */
+
+        border-radius: 12px;
         color: white !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        justify-content: flex-start;
-        /* Align left alongside icon */
-        padding-left: 2rem;
+        justify-content: center;
+        gap: 10px;
     }
 
     .nav-auth-btn:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--color-primary) !important;
+        background: rgba(139, 92, 246, 0.3);
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        transform: translateY(-2px);
     }
 }
