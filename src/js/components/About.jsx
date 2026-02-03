@@ -29,6 +29,8 @@ const About = ({ session }) => {
                 let { data, error } = await supabase
                     .from('about_info')
                     .select('*')
+                    .order('updated_at', { ascending: false })
+                    .limit(1)
                     .maybeSingle();
 
                 if (error && error.code !== 'PGRST116') {
@@ -56,12 +58,13 @@ const About = ({ session }) => {
 
                     const { data: insertedData, error: upsertError } = await supabase
                         .from('about_info')
-                        .upsert(initialPayload)
+                        .insert(initialPayload)
                         .select()
                         .single();
 
                     if (!upsertError && insertedData) {
                         setAboutData({
+                            id: insertedData.id,
                             title: insertedData.title,
                             subtitle: insertedData.subtitle,
                             description: insertedData.description || [],
@@ -74,6 +77,7 @@ const About = ({ session }) => {
                 } else {
                     // 3. DB has data, use it
                     setAboutData({
+                        id: data.id,
                         title: data.title,
                         subtitle: data.subtitle,
                         description: data.description || [],
@@ -148,10 +152,18 @@ const About = ({ session }) => {
                 updated_at: new Date().toISOString()
             };
 
-            // Get existing ID if any to ensure update instead of insert (if not using ID 1 strategy)
-            const { data: existing } = await supabase.from('about_info').select('id').maybeSingle();
-            if (existing) {
-                dbPayload.id = existing.id;
+            // Use the ID from our state to update the correct row
+            if (aboutData.id) {
+                dbPayload.id = aboutData.id;
+            } else {
+                // Fallback: Try to find latest existing just in case
+                const { data: existing } = await supabase
+                    .from('about_info')
+                    .select('id')
+                    .order('updated_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+                if (existing) dbPayload.id = existing.id;
             }
 
             // 2. Perform Upsert
